@@ -1,0 +1,8 @@
+#!/bin/tcsh
+echo Creation de la javadoc...
+set temp=""
+set rep=$1
+foreach i (`find $rep/src/ -name "*.java"`)
+	set temp="$temp $i"
+end
+javadoc -author -private -version -d $rep/doc/ $temp

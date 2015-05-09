@@ -1,0 +1,34 @@
+#!/bin/tcsh
+#variables locales
+#variables a modifier si necessaire
+set workspace="ww"
+set sources="src"
+set classes="class"
+#fin initialisation variables
+
+
+#debut
+set rep_courant=`pwd`
+cd ..
+set rep_parent=`pwd`
+#verification si on se trouve dans un repertoire $workspace
+if ($rep_courant == $rep_parent/$workspace) then
+	#verification de l'existance du repertoire ../$sources et ../$classes
+	if (-e $sources && -e $classes) then
+		cd $rep_courant
+		echo Compilation en cours...
+		set files=""
+		#cherche recursivement les fichiers .java dans le repertoire ../$sources
+		foreach i (`find ../$sources/ -name "*.java"`)
+			set files="$files $i"
+		end
+		#commande de compilation
+		#compile dans le repertoire $classes
+		javac $* -d ../$classes/$files
+	else
+		echo "Au moins un des repertoires ../$sources ou ../$class n'existe pas"
+	endif
+else
+	echo "La commande doit etre lancee depuis le repertoire $workspace du projet"
+endif
+#fin
