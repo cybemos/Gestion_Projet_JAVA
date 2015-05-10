@@ -26,7 +26,7 @@ public class Preferences implements Serializable {
 	* Actual version of Preferences. If the version != loaded version of preferences file, initialize attributs when they are null
 	*/
 
-	private static final int ACTUAL_VERSION = 2;
+	private static final int ACTUAL_VERSION = 3;
 	
 	/**
 	* Version which is saved in the file
@@ -49,6 +49,7 @@ public class Preferences implements Serializable {
 	private boolean toujoursAfficher;
 	private ArrayList<File> lastProjects;
 	private HashMap<File, String> classToExecute;
+	private ArrayList<File> classpath;
 	private transient CheckPreferences checkPreferences;
 	
 	/**
@@ -61,12 +62,33 @@ public class Preferences implements Serializable {
 		this.checkPreferences = checkPreferences;
 		lastProjects = new ArrayList<File>();
 		classToExecute = new HashMap<File, String>();
+		classpath = new ArrayList<File>();
 		font = new Font("Arial", Font.PLAIN, 12);
 		couleurForegroundTexte = Color.BLACK;
 		couleurBackgoundTexte = Color.WHITE;
 		couleurMenus = Color.LIGHT_GRAY;
 		afficherBarreOutils = true;
 		toujoursAfficher = false;
+	}
+	
+	public void addClasspath(File classDirectory) {
+		classpath.add(classDirectory);
+	}
+	
+	public void removeClasspath(File classDirectory) {
+		classpath.remove(classDirectory);
+	}
+	
+	public void resetClasspath() {
+		classpath.clear();
+	}
+	
+	public File[] getClasspath() {
+		File[] files = new File[classpath.size()];
+		for (int i = 0 ; i < files.length ; i++) {
+			files[i] = classpath.get(i);
+		}
+		return files;
 	}
 	
 	/**
@@ -207,6 +229,7 @@ public class Preferences implements Serializable {
 		p.afficherBarreOutils = tmp.afficherBarreOutils;
 		p.toujoursAfficher = tmp.toujoursAfficher;
 		if (p.classToExecute == null) p.classToExecute = new HashMap<File, String>();
+		if (p.classpath == null) p.classpath = new ArrayList<File>();
 		p.version = Preferences.ACTUAL_VERSION;
 	}
 	

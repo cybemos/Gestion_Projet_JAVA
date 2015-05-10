@@ -22,6 +22,8 @@ import javax.swing.JFileChooser;
 import javax.swing.BorderFactory;
 import javax.swing.JColorChooser;
 import java.util.ArrayList;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 /**
 * Controller of the application
@@ -29,7 +31,7 @@ import java.util.ArrayList;
 * @version 1.0
 */
 
-public class Controleur implements ActionListener, KeyListener, /*MouseListener,*/ WindowListener, PreferencesListener, ItemListener/*, TreeSelectionListener*/ {
+public class Controleur implements ActionListener, KeyListener, /*MouseListener,*/ WindowListener, PreferencesListener, ItemListener/*, TreeSelectionListener*/, ListSelectionListener {
 
 	private Projet projet;
 	private Interface ihm;
@@ -40,6 +42,7 @@ public class Controleur implements ActionListener, KeyListener, /*MouseListener,
 	private DialogAide dialogAide;
 	private DialogGenererJar dialogGenererJar;
 	private DialogExecuter dialogExecuter;
+	private DialogClasspath dialogClasspath;
 	private JFileChooser fileChooser;
 	private JTextOutputStream out;
 	private Preferences preferences;
@@ -77,6 +80,7 @@ public class Controleur implements ActionListener, KeyListener, /*MouseListener,
 		dialogInfos = new DialogInfos(this);
 		dialogGenererJar = new DialogGenererJar(this);
 		dialogExecuter = new DialogExecuter(this);
+		dialogClasspath = new DialogClasspath(this);
 		dialogAPropos = new DialogAPropos(ihm);
 		dialogAide = new DialogAide(ihm);
 		recherche = new Recherche(this, ihm.getArea());
@@ -97,6 +101,10 @@ public class Controleur implements ActionListener, KeyListener, /*MouseListener,
 		try {
 			recherche.updateColor();
 		} catch (NullPointerException ex) {}
+	}
+	
+	public void valueChanged(ListSelectionEvent e) {
+		dialogClasspath.selectionChanged();
 	}
 	
 	/**
@@ -122,6 +130,15 @@ public class Controleur implements ActionListener, KeyListener, /*MouseListener,
 
 	public Preferences getPreferences() {
 		return preferences;
+	}
+	
+	/**
+	* @see #projet
+	* @see projet.datas.Projet#setClassLoader(File[])
+	*/
+	
+	public void setClassLoader(File[] files) {
+		if (projet != null) projet.setClassLoader(files);
 	}
 	
 	/**
@@ -217,6 +234,7 @@ public class Controleur implements ActionListener, KeyListener, /*MouseListener,
 		} else {
 			ihm.setTitle("Projet : " + projet);
 			if (!preferences.getLastProjects().contains(projet.getProjectFile())) addToRecentsProjects(projet);
+			dialogClasspath.update();
 		}
 
 		for (int i = 0 ; i < boutonsProjet.length ; i++) {
@@ -336,6 +354,8 @@ public class Controleur implements ActionListener, KeyListener, /*MouseListener,
 			dialogGenererJar.setVisible(true);
 		} else if (e.getSource() == items[1][6]) {
 			dialogInfos.setVisible(true);
+		} else if (e.getSource() == items[1][7]) {
+			dialogClasspath.setVisible(true);
 		} else if (e.getSource() == items[2][1]) {
 			preferences.setAfficherBarreOutilsValue(((JCheckBoxMenuItem) items[2][1]).getState());
 		} else if (e.getSource() == items[2][2]) {
@@ -376,6 +396,12 @@ public class Controleur implements ActionListener, KeyListener, /*MouseListener,
 		} else if (e.getSource() == dialogGenererJar.getBoutonConfirmer()) {
 			projet.createJarArchive(dialogGenererJar.getOutputFile(), dialogGenererJar.getManifest());
 			dialogGenererJar.setVisible(false);
+		} else if (e.getSource() == dialogClasspath.getBoutonImport()) {
+			dialogClasspath.importEvent();
+		} else if (e.getSource() == dialogClasspath.getBoutonSupprimer()) {
+			dialogClasspath.supprimerEvent();
+		} else if (e.getSource() == dialogClasspath.getBoutonFermer()) {
+			dialogClasspath.setVisible(false);
 		} else if (e.getSource() == dialogPreferences.getBoutonsCouleur()[0]) {
 			couleur = JColorChooser.showDialog(dialogPreferences, "Choisir une couleur", preferences.getMenusColor());
 			if (couleur != null) preferences.setMenusColor(couleur);

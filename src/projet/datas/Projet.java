@@ -18,6 +18,7 @@ import java.net.URL;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 
 import projet.ctrl.Controleur;
 import static projet.ctrl.Controleur.terminal;
@@ -55,8 +56,28 @@ public class Projet {
 		Projet.addPath(new File(projet, "class").toString());
 	}
 	
+	/**
+	* Reset the classLoader of the project
+	*/
+	
 	private void resetClassLoader() {
 		classLoader = URLClassLoader.newInstance(new URL[0]);
+	}
+	
+	/**
+	* Set the classLoader of the projet with all files + classes of the project
+	* @param files directory or jarfile which contains classes
+	*/
+	
+	public void setClassLoader(File[] files) {
+		URL[] urls = new URL[files.length+1];
+		try {
+			urls[0] = new File(projet, "class").toURI().toURL();
+			for (int i = 0 ; i < files.length ; i++) urls[i+1] = files[i].toURI().toURL();
+			classLoader = URLClassLoader.newInstance(urls);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void preventCloseWindows(Controleur ctrl, boolean prevent) {
@@ -139,16 +160,23 @@ public class Projet {
 		System.out.println("compilation...");
 
 		File[] files = Util.getFiles(new File(projet, "src"));
-		String[] args = new String[files.length + 3];
+		String[] args = new String[files.length + 5];
+		
+		String classpath = "";
+		URL[] urls = classLoader.getURLs();
+		for (int i = 0 ; i < urls.length ; i++) classpath += urls[i].getFile()+":";
 		
 		args[0] = "-Xlint";
-		args[1] = "-d";
-		args[2] = new File(projet, "class").toString();
+		args[1] = "-classpath";
+		args[2] = classpath;
+		args[3] = "-d";
+		args[4] = new File(projet, "class").toString();
 		for (int i = 0 ; i < files.length ; i++) {
-			args[i + 3] = files[i].toString();
+			args[i + 5] = files[i].toString();
 		}
 		
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+
 		if (compiler == null) System.out.println("Compilateur non détecté. Impossible de lancer la compilation.");
 		else {
 			int result = compiler.run(System.in, System.out, System.err, args);

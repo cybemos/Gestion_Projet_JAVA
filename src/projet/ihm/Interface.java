@@ -118,17 +118,17 @@ public class Interface extends JFrame implements Serializable {
 	private void initMenu() {
 		bar = new JMenuBar();
 		bar.setBackground(Color.WHITE);
-		items = new JMenuItem[5][];
-		int[] tailles = {6, 7, 3, 4, 4};
-		for (int i = 0 ; i < items.length ; i++) items[i] = new JMenuItem[tailles[i]];
 		
 		char[] mnemonics = {'F', 'E', 'A', 'O', '?'};
 		
-		String[][] noms = {{"Fichier", "Nouveau", "Ouvrir", "Derniers projets", "Vider la liste", "Quitter"}, {"Projet", "Compiler", "Execution rapide", "Executer...", "Générer la javadoc", "Générer un jar file", "Infos sur le projet"}, {"Affichage", "Afficher Barre d'Outils", "Toujours afficher la fenetre"}, {"Outils", "Preferences", "Rechercher", "Réinitialiser recherche"}, {"?", "Aide", "A Propos", "Envoyer un retour"}};
+		String[][] noms = {{"Fichier", "Nouveau", "Ouvrir", "Derniers projets", "Vider la liste", "Quitter"}, {"Projet", "Compiler", "Execution rapide", "Executer...", "Générer la javadoc", "Générer un jar file", "Infos sur le projet", "Gérer le classpath"}, {"Affichage", "Afficher Barre d'Outils", "Toujours afficher la fenetre"}, {"Outils", "Preferences", "Rechercher", "Réinitialiser recherche"}, {"?", "Aide", "A Propos", "Envoyer un retour"}};
 		
-		KeyStroke[][] raccourcis = {{null, getCtrlKeyStroke(KeyEvent.VK_N), getCtrlKeyStroke(KeyEvent.VK_O), null, null, getCtrlKeyStroke(KeyEvent.VK_Q)}, {null, null, null, null, null, null, null}, {null, null, null}, {null, null, getCtrlKeyStroke(KeyEvent.VK_F), null}, {null, null, null, null}};
+		KeyStroke[][] raccourcis = {{null, getCtrlKeyStroke(KeyEvent.VK_N), getCtrlKeyStroke(KeyEvent.VK_O), null, null, getCtrlKeyStroke(KeyEvent.VK_Q)}, {null, null, null, null, null, null, null, null}, {null, null, null}, {null, null, getCtrlKeyStroke(KeyEvent.VK_F), null}, {null, null, null, null}};
 		
-		String[][] images = {{null, "/data/images/menus/new_15px.png", "/data/images/menus/open_15px.png", null, null, "/data/images/menus/exit_15px.png"}, {null, "/data/images/menus/code_15px.png", "/data/images/menus/run_15px.png", "/data/images/menus/run_15px.png", "/data/images/menus/java_15px.png", "/data/images/menus/java_15px.png", null}, {null, null, null}, {null, null, "/data/images/menus/research_15px.png", null}, {null, null, null, null}};
+		String[][] images = {{null, "/data/images/menus/new_15px.png", "/data/images/menus/open_15px.png", null, null, "/data/images/menus/exit_15px.png"}, {null, "/data/images/menus/code_15px.png", "/data/images/menus/run_15px.png", "/data/images/menus/run_15px.png", "/data/images/menus/java_15px.png", "/data/images/menus/java_15px.png", null, null}, {null, null, null}, {null, null, "/data/images/menus/research_15px.png", null}, {null, null, null, null}};
+		
+		items = new JMenuItem[noms.length][];
+		for (int i = 0 ; i < items.length ; i++) items[i] = new JMenuItem[noms[i].length];
 
 		for (int i = 0 ; i < items.length ; i++) {
 			for (int j = 0 ; j < items[i].length ; j++) {
